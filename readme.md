@@ -11,12 +11,15 @@ Read:
 
 ## Exercise: React Front End
 
-Clone the backend repo from Github:
+Clone this repo into your projects folder and cd into it.
 
-```sh
-cd <to your class projects directory>
-git clone <backend-repo>
-```
+Remove the `.git` directory with `rm -rf .git`.
+
+### Backend
+
+cd into the backend, initialize it as a git repo, NPM install all dependencies and start the backend.
+
+<!-- `docker run --name recipes-mongo -dit -p 27017:27017 --rm mongo:4.4.1` -->
 
 Note the scripts in package.json:
 
@@ -27,7 +30,7 @@ Note the scripts in package.json:
 },
 ```
 
-And the following in server.js:
+Note the following in server.js:
 
 ```js
 if (process.env.NODE_ENV === "production") {
@@ -55,9 +58,9 @@ Note: install a JSON formatter for your browser.
 
 ## Create a React Project
 
-cd into the top level of the project directory and run Create React App:
+cd into _the top level_ of the project directory and run Create React App:
 
-`npx create-react-app client`
+`npx create-react-app client --use-npm`
 
 CD into the client folder and remove the contents of the src folder and create an initial index.js file:
 
