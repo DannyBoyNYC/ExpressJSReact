@@ -130,13 +130,13 @@ function App() {
 export default App;
 ```
 
-To test the new component make adjustments to index.js (import and render App):
+Add some basic CSS:
 
 ```js
 import React from "react";
 import ReactDOM from "react-dom";
 import App from "./components/App";
-// import "./index.css";
+import "./index.css";
 
 ReactDOM.render(<App />, document.querySelector("#root"));
 ```
@@ -280,6 +280,8 @@ function Recipe(props) {
 export default Recipe;
 ```
 
+Import it and compose it in App.js and test.
+
 Scaffold the Recipe component:
 
 ```js
@@ -368,7 +370,7 @@ Demo - in recipe.js:
 
 ```js
 {
-  process.env.NODE_ENV === "production" ? "prod" : "dev";
+  process.env.NODE_ENV === "production" ? "prod" : "dev"
 }
 <small>
   You are running this application in <b>{process.env.NODE_ENV}</b> mode.
@@ -379,7 +381,7 @@ Demo - in recipe.js:
 
 Up until this point, you have dealt with simple projects that do not require transitioning from one view to another. You have yet to work with Routing in React.
 
-Routing is the ability to move between different parts of an application when a user enters a URL or clicks an element without actually going to new new HTML document or refreshing the page.
+In SPAs, routing is the ability to move between different parts of an application when a user enters a URL or clicks an element without actually going to new new HTML document or refreshing the page.
 
 To begin exploring client side routing we'll use the [React Router](https://reactrouter.com/web/guides/quick-start).
 
@@ -421,24 +423,20 @@ export default App;
 ```
 
 ```js
-return (
   <BrowserRouter>
     <Routes>
       <Route path="/" element={<Recipes recipes={recipes} />} />
     </Routes>
   </BrowserRouter>
-);
 ```
 
 ```js
-return (
   <BrowserRouter>
     <Routes>
       <Route path="/" element={<Recipes recipes={recipes} />} />
       <Route path="/:recipeId" element={<RecipeDetail recipes={recipes} />} />
     </Routes>
   </BrowserRouter>
-);
 ```
 
 Check for browser refresh on the new route (as when accessing a new page) by adding a log (`console.log(" checking ", recipes);`) and watching the console.
@@ -471,6 +469,8 @@ Check for browser refresh on the new route by watching the console.
 Demo - note that the component renders twice. Try using an object instead of an array to initialize state:
 
 `const [recipes, setRecipes] = React.useState({});`
+
+Here is the entire App component:
 
 ```js
 import React from "react";
@@ -591,6 +591,8 @@ function Toggler() {
 
 export default Toggler;
 ```
+
+Test it.
 
 Create a hooks directory and save this as useToggle.js:
 
