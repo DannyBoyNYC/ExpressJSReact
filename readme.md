@@ -1064,7 +1064,7 @@ function App() {
 
   return (
     <main>
-      <Router>
+      <BrowserRouter>
         <Nav setLoggedin={setLoggedin} loggedin={loggedin} />
         <Routes>
           <Route path="/" element={<Recipes recipes={recipes} />} />
@@ -1073,7 +1073,7 @@ function App() {
             element={<RecipeDetail recipes={recipes} />}
           />
         </Routes>
-      </Router>
+      </BrowserRouter>
     </main>
   );
 }
@@ -1189,6 +1189,20 @@ const NavStyles = styled.nav`
 `--btn-color: #007eb6;` overrides the default in our Button component:
 
 `--btn-bg: var(--btn-color, #bada55);`
+
+we proably want to store our color palette at a higher level. Add to index.css:
+
+```css
+:root {
+  --blue-dark: #046e9d;
+}
+```
+
+In Nav:
+
+```css
+--btn-color: var(--blue-dark);
+```
 
 This is the beginning of our standalone Button component.
 
@@ -1420,14 +1434,17 @@ We need to alter App.js to use the new hook:
 
 ```js
 import React from "react";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Recipes from "./Recipes";
 import RecipeDetail from "./RecipeDetail";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { useFetch } from "./hooks/useFetch";
+import Nav from "./Nav";
+import useToggle from "./hooks/useToggle";
 
 function App() {
   const [recipes, setRecipes] = React.useState([]);
-  const [loading, setLoading] = React.useState(false);
+  const [loggedin, setLoggedin] = useToggle(true);
+  const [loading, setLoading] = useToggle(true);
   const [error, setError] = React.useState("");
   const { get } = useFetch(`/api/recipes`);
 
@@ -1451,12 +1468,21 @@ function App() {
   }
 
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<Recipes recipes={recipes} />} />
-        <Route path="/:recipeId" element={<RecipeDetail recipes={recipes} />} />
-      </Routes>
-    </BrowserRouter>
+    <main>
+      <BrowserRouter>
+        <Nav setLoggedin={setLoggedin} loggedin={loggedin} />
+        <Routes>
+          <Route
+            path="/"
+            element={<Recipes recipes={recipes} loggedin={loggedin} />}
+          />
+          <Route
+            path="/:recipeId"
+            element={<RecipeDetail recipes={recipes} />}
+          />
+        </Routes>
+      </BrowserRouter>
+    </main>
   );
 }
 
@@ -1596,17 +1622,9 @@ RecipeDetail.js:
 ```js
 const deleteRecipe = (recipeId) => {
   console.log("recipeId:", recipeId);
-  del(`/api/recipes/${recipeId}`)
-    .then(
-      setRecipes((recipes) =>
-        recipes.filter((recipe) => recipe._id !== recipe.recipeId)
-      )
-    )
-    .then(
-      get("/api/recipes").then((data) => {
-        setRecipes(data);
-      })
-    );
+  del(`/api/recipes/${recipeId}`).then(
+    setRecipes((recipes) => recipes.filter((recipe) => recipe._id !== recipeId))
+  );
 };
 ```
 
@@ -2276,11 +2294,12 @@ Recipes.js
 ```js
 import RecipesContext from "./RecipesContext";
 
-function Recipes() {
+function Recipes({ loggedin, addRecipe }) {
   return (
     <RecipesContext.Consumer>
       {(recipes) => (
         <summary>
+          {loggedin && <FormCreateRecipe addRecipe={addRecipe} />}
           {recipes.map((recipe) => (
             <Recipe key={recipe._id} recipe={recipe} />
           ))}
