@@ -370,7 +370,7 @@ Demo - in recipe.js:
 
 ```js
 {
-  process.env.NODE_ENV === "production" ? "prod" : "dev"
+  process.env.NODE_ENV === "production" ? "prod" : "dev";
 }
 <small>
   You are running this application in <b>{process.env.NODE_ENV}</b> mode.
@@ -423,20 +423,20 @@ export default App;
 ```
 
 ```js
-  <BrowserRouter>
-    <Routes>
-      <Route path="/" element={<Recipes recipes={recipes} />} />
-    </Routes>
-  </BrowserRouter>
+<BrowserRouter>
+  <Routes>
+    <Route path="/" element={<Recipes recipes={recipes} />} />
+  </Routes>
+</BrowserRouter>
 ```
 
 ```js
-  <BrowserRouter>
-    <Routes>
-      <Route path="/" element={<Recipes recipes={recipes} />} />
-      <Route path="/:recipeId" element={<RecipeDetail recipes={recipes} />} />
-    </Routes>
-  </BrowserRouter>
+<BrowserRouter>
+  <Routes>
+    <Route path="/" element={<Recipes recipes={recipes} />} />
+    <Route path="/:recipeId" element={<RecipeDetail recipes={recipes} />} />
+  </Routes>
+</BrowserRouter>
 ```
 
 Check for browser refresh on the new route (as when accessing a new page) by adding a log (`console.log(" checking ", recipes);`) and watching the console.
@@ -2238,6 +2238,99 @@ main.lit {
 ## Context
 
 Context provides a way to pass data through the component tree without having to pass props down manually at every level. - The React Docs
+
+Create RecipesContext.js
+
+```js
+import React from "react";
+
+const RecipesContext = React.createContext();
+// RecipesContext.Provider
+// RecipesContext.Consumer
+
+export default RecipesContext;
+```
+
+App.js
+
+```js
+import RecipesContext from "./RecipesContext";
+...
+<RecipesContext.Provider value={recipes}>
+  <main>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Recipes />} />
+        <Route
+          path="/:recipeId"
+          element={<RecipeDetail recipes={recipes} />}
+        />
+      </Routes>
+    </BrowserRouter>
+  </main>
+</RecipesContext.Provider>
+```
+
+Recipes.js
+
+```js
+import RecipesContext from "./RecipesContext";
+
+function Recipes() {
+  return (
+    <RecipesContext.Consumer>
+      {(recipes) => (
+        <summary>
+          {recipes.map((recipe) => (
+            <Recipe key={recipe._id} recipe={recipe} />
+          ))}
+        </summary>
+      )}
+    </RecipesContext.Consumer>
+  );
+}
+```
+
+RecipeDetail.js
+
+```js
+import RecipesContext from "./RecipesContext";
+
+function RecipeDetail(props) {
+  const recipes = React.useContext(RecipesContext);
+
+  const { recipeId } = useParams();
+  const currRecipe = recipes.filter((recipe) => recipe._id === recipeId);
+  const thisRecipe = { ...currRecipe[0] };
+
+  return (
+    <div>
+      <img src={`/img/${thisRecipe.image}`} alt={thisRecipe.title} />
+      <h1>{thisRecipe.title}</h1>
+      <p>{thisRecipe.description}</p>
+      <Link to="/">Home</Link>
+    </div>
+  );
+}
+```
+
+```js
+function RecipeDetail(props) {
+  const recipes = React.useContext(RecipesContext);
+
+  const { recipeId } = useParams();
+  const currRecipe = recipes.find((recipe) => recipe._id === recipeId);
+
+  return (
+    <div>
+      <img src={`/img/${currRecipe.image}`} alt={currRecipe.title} />
+      <h1>{currRecipe.title}</h1>
+      <p>{currRecipe.description}</p>
+      <Link to="/">Home</Link>
+    </div>
+  );
+}
+```
 
 ## Deployment
 
