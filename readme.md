@@ -1,5 +1,14 @@
 # Express and React
 
+## Assignment
+
+Customize the backend and client work with your own content to create a full stack website.
+Edit the schema to conform to you content.
+Edit the client to display any content that you add.
+
+- CRUD operations are optional
+- CSS and design are optional
+
 ## Reading
 
 You should have read and stepped through the [useState](https://reactjs.org/docs/hooks-state.html) and [useEffect](https://reactjs.org/docs/hooks-effect.html) documentation. Use Code Sandbox to examine the code samples.
