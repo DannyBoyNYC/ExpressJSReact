@@ -69,7 +69,7 @@ Note: install a JSON formatter for your browser.
 
 cd into _the top level_ of the project directory and run Create React App:
 
-`npx create-react-app client`
+`npx create-react-app client --use-npm`
 
 CD into the client folder and remove the contents of the src folder and create an initial index.js file:
 
@@ -79,7 +79,7 @@ $ rm src/*
 $ touch src/index.js
 ```
 
-in `client/.vscode/settings.json`:
+in `.vscode/settings.json`:
 
 ```js
 {
@@ -96,13 +96,11 @@ Create a simple start page in `index.js`:
 
 ```js
 import React from "react";
-import { createRoot } from "react-dom/client";
+import ReactDOM from "react-dom";
+
 import App from "./App";
 
-const container = document.getElementById("root");
-const root = createRoot(container);
-
-root.render(<App />);
+ReactDOM.render(<App />, document.querySelector("#root"));
 ```
 
 Set a [Proxy](https://create-react-app.dev/docs/proxying-api-requests-in-development/) in the React client package.json.
@@ -145,14 +143,11 @@ Add some basic CSS:
 
 ```js
 import React from "react";
-import { createRoot } from "react-dom/client";
+import ReactDOM from "react-dom";
+import App from "./components/App";
 import "./index.css";
-import App from "./App";
 
-const container = document.getElementById("root");
-const root = createRoot(container);
-
-root.render(<App />);
+ReactDOM.render(<App />, document.querySelector("#root"));
 ```
 
 Add a new index.css file in src:
@@ -282,7 +277,7 @@ React.useEffect(() => {
 
 ## Multiple Components
 
-Breakout the Recipe component into a separate `src/Recipe.js` file:
+Breakout the Recipe component into a separate src/Recipe.js file:
 
 ```js
 import React from "react";
@@ -380,11 +375,12 @@ function App() {
 export default App;
 ```
 
-Demo - in Recipe.js:
+Demo - in recipe.js:
 
-<!-- prettier-ignore -->
 ```js
-{ process.env.NODE_ENV === "production" ? "prod" : "dev" }
+{
+  process.env.NODE_ENV === "production" ? "prod" : "dev";
+}
 <small>
   You are running this application in <b>{process.env.NODE_ENV}</b> mode.
 </small>;
@@ -575,10 +571,10 @@ export default RecipeDetail;
 
 Building [custom Hooks](https://reactjs.org/docs/hooks-custom.html) lets you extract component logic into reusable functions.
 
-<!-- Do this in a new branch. -->
+Do this in a new branch.
 
-<!-- Create Toggle.js, import it into App and render it. -->
-<!--
+Create Toggle.js, import it into App and render it.
+
 ```js
 import React, { useState } from "react";
 
@@ -605,7 +601,7 @@ function Toggler() {
 export default Toggler;
 ```
 
-Test it. -->
+Test it.
 
 Create a hooks directory and save this as useToggle.js:
 
@@ -625,15 +621,14 @@ function useToggle(initialVal = false) {
 export default useToggle;
 ```
 
-Demo the hook with `Toggle.js` in `index.js`:
+Use the hook in Toggle.js:
 
 ```js
+import React from "react";
 import useToggle from "./hooks/useToggle";
-
 function Toggler() {
   const [isHappy, toggleIsHappy] = useToggle(true);
   const [isBanana, toggleIsBanana] = useToggle(true);
-
   return (
     <div>
       <h1 onClick={toggleIsHappy}>{isHappy ? "😄" : "😢"}</h1>
@@ -641,9 +636,11 @@ function Toggler() {
     </div>
   );
 }
+
+export default Toggler;
 ```
 
-<!-- Create a playground in `index.js` by commenting out the App import statement and add some test code:
+Create a playground in `index.js` by commenting out the App import statement and add some test code:
 
 ```js
 import React from "react";
@@ -783,9 +780,9 @@ const {
 // }, [index]);
 ```
 
-Test and clean up the file. -->
+Test and clean up the file.
 
-<!-- ```js
+```js
 import React from "react";
 import ReactDOM from "react-dom";
 import "./index.css";
@@ -862,7 +859,7 @@ function App() {
 }
 
 ReactDOM.render(<App />, document.querySelector("#root"));
-``` -->
+```
 
 Create a hooks directory in src, move the custom hook with the changes below into it, and export it.
 
@@ -898,7 +895,6 @@ export function useFetch(url) {
 }
 ```
 
-<!--
 and import the hook into `index.js`:
 
 ```js
@@ -952,9 +948,9 @@ function App() {
 }
 
 ReactDOM.render(<App />, document.querySelector("#root"));
-``` -->
+```
 
-<!-- Reset `index.js` to use our old App file. We will retrofit our hook for use in our recipes app. -->
+Reset `index.js` to use our old App file. We will retrofit our hook for use in our recipes app.
 
 - import the hook into App.js:
 
@@ -973,7 +969,9 @@ function App() {
 - Change the recipes route to pass data the the recipes component:
 
 ```js
-<Route path="/" element={<Recipes recipes={recipes} />} />
+<Route exact path="/">
+  <Recipes recipes={data} />
+</Route>
 ```
 
 - Finally, add the loading and error returns we used in the json placeholder example:
@@ -1128,7 +1126,7 @@ const NavStyles = styled.nav`
 
 ## Creating a Reusable Button Component
 
-An element shouldn’t set its width, margin, height and color. These attributes should be set by its parent(s).
+"An element shouldn’t set its width, margin, height and color. These attributes should be set by its parent(s)."
 
 Remove the button styles in Nav and review CSs variables by using a variable to set the background color of Nav:
 
@@ -1179,13 +1177,13 @@ Note: `--btn-bg: var(--btn-color, #bada55);` uses a variable to set a variable a
 
 Import it into Nav `import Button from "./button/Button";` and compose it:
 
-<!-- prettier-ignore -->
 ```js
-{ loggedin ? (
+{
+  loggedin ? (
     <Button func={() => setLoggedin(false)}>Log Out</Button>
   ) : (
     <Button func={() => setLoggedin(true)}>Log In</Button>
-  )
+  );
 }
 ```
 
@@ -1615,32 +1613,20 @@ const { get, post, del } = useFetch(`/api/recipes`);
   };
   ...
 
-<Route
-  path="/:recipeId"
-  element={
-    <RecipeDetail
-      recipes={recipes}
-      deleteRecipe={deleteRecipe}
-      loggedin={loggedin}
-    />
-  }
-/>
+  <RecipeDetail loggedin={loggedin} deleteRecipe={deleteRecipe} />
 ```
 
 RecipeDetail.js:
 
-<!-- prettier-ignore -->
 ```js
-{props.loggedin && (
-  <button onClick={() => props.deleteRecipe(thisRecipe._id)}>
-    delete
-  </button>
-)}
+{
+  props.loggedin && (
+    <button onClick={() => props.deleteRecipe(thisRecipe._id)}>delete</button>
+  );
+}
 
 <Link to="/">Home</Link>;
 ```
-
-App.js:
 
 ```js
 const deleteRecipe = (recipeId) => {
@@ -1718,7 +1704,7 @@ const editRecipe = (updatedRecipe) => {
 />
 ```
 
-New `src/FormEditRecipe.js`:
+New FormEditRecipe.js:
 
 ```js
 import React from "react";
@@ -1791,7 +1777,7 @@ const FormEditRecipe = ({ editRecipe, thisRecipe }) => {
 export default FormEditRecipe;
 ```
 
-Compose it in`RecipeDetail.js`:
+RecipeDetail.js:
 
 ```js
 import FormEditRecipe from "./FormEditRecipe";
@@ -2280,12 +2266,14 @@ main.lit {
 
 Context provides a way to pass data through the component tree without having to pass props down manually at every level. - The React Docs
 
-Create `src/RecipesContext.js`:
+Create RecipesContext.js
 
 ```js
 import React from "react";
 
 const RecipesContext = React.createContext();
+// RecipesContext.Provider
+// RecipesContext.Consumer
 
 export default RecipesContext;
 ```
@@ -2298,23 +2286,11 @@ import RecipesContext from "./RecipesContext";
 <RecipesContext.Provider value={recipes}>
   <main>
     <BrowserRouter>
-      <Nav setLoggedin={setLoggedin} loggedin={loggedin} />
       <Routes>
-        {/* NOTE - we no longer pass recipes as a prop to Recipes */}
-        <Route
-          path="/"
-          element={<Recipes loggedin={loggedin} addRecipe={addRecipe} />}
-        />
+        <Route path="/" element={<Recipes />} />
         <Route
           path="/:recipeId"
-          element={
-            <RecipeDetail
-              recipes={recipes}
-              deleteRecipe={deleteRecipe}
-              loggedin={loggedin}
-              editRecipe={editRecipe}
-            />
-          }
+          element={<RecipeDetail recipes={recipes} />}
         />
       </Routes>
     </BrowserRouter>
@@ -2325,24 +2301,22 @@ import RecipesContext from "./RecipesContext";
 Recipes.js
 
 ```js
-import React from "react";
-import Recipe from "./Recipe";
-import FormCreateRecipe from "./FormCreateRecipe";
 import RecipesContext from "./RecipesContext";
 
 function Recipes({ loggedin, addRecipe }) {
-  const recipes = React.useContext(RecipesContext);
   return (
-    <section>
-      {loggedin && <FormCreateRecipe addRecipe={addRecipe} />}
-      {recipes.map((recipe) => (
-        <Recipe key={recipe._id} recipe={recipe} />
-      ))}
-    </section>
+    <RecipesContext.Consumer>
+      {(recipes) => (
+        <summary>
+          {loggedin && <FormCreateRecipe addRecipe={addRecipe} />}
+          {recipes.map((recipe) => (
+            <Recipe key={recipe._id} recipe={recipe} />
+          ))}
+        </summary>
+      )}
+    </RecipesContext.Consumer>
   );
 }
-
-export default Recipes;
 ```
 
 RecipeDetail.js
@@ -2350,9 +2324,40 @@ RecipeDetail.js
 ```js
 import RecipesContext from "./RecipesContext";
 
-function RecipeDetail({ loggedin, deleteRecipe, editRecipe }) {
+function RecipeDetail(props) {
   const recipes = React.useContext(RecipesContext);
-  ...
+
+  const { recipeId } = useParams();
+  const currRecipe = recipes.filter((recipe) => recipe._id === recipeId);
+  const thisRecipe = { ...currRecipe[0] };
+
+  return (
+    <div>
+      <img src={`/img/${thisRecipe.image}`} alt={thisRecipe.title} />
+      <h1>{thisRecipe.title}</h1>
+      <p>{thisRecipe.description}</p>
+      <Link to="/">Home</Link>
+    </div>
+  );
+}
+```
+
+```js
+function RecipeDetail(props) {
+  const recipes = React.useContext(RecipesContext);
+
+  const { recipeId } = useParams();
+  const currRecipe = recipes.find((recipe) => recipe._id === recipeId);
+
+  return (
+    <div>
+      <img src={`/img/${currRecipe.image}`} alt={currRecipe.title} />
+      <h1>{currRecipe.title}</h1>
+      <p>{currRecipe.description}</p>
+      <Link to="/">Home</Link>
+    </div>
+  );
+}
 ```
 
 ## Notes
