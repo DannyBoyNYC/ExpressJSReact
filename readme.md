@@ -26,9 +26,12 @@ Remove the `.git` directory with `rm -rf .git`.
 
 ### Backend
 
-cd into the backend, initialize it as a git repo, NPM install all dependencies and start the backend.
-
-<!-- `docker run --name recipes-mongo -dit -p 27017:27017 --rm mongo:4.4.1` -->
+- cd into the backend,
+- initialize it as a git repo,
+- NPM install all dependencies,
+- start Docker and run `docker run --name recipes-mongo -dit -p 27017:27017 --rm mongo:4.4.1`
+- start the backend: `npm run dev`
+- test by visiting localhost on port 3456.
 
 Note the scripts in package.json:
 
@@ -394,11 +397,13 @@ Demo - in Recipe.js:
 
 Up until this point, you have dealt with simple projects that do not require transitioning from one view to another. You have yet to work with Routing in React.
 
-In SPAs, routing is the ability to move between different parts of an application when a user enters a URL or clicks an element without actually going to new new HTML document or refreshing the page.
+In SPAs, routing is the ability to move between different parts of an application when a user enters a URL or clicks an element without actually going to a new HTML document or refreshing the page.
+
+We could build a "list / detail" type site without routing but it is important to have an introduction to it so that you can use it in larger projects.
 
 To begin exploring client side routing we'll use the [React Router](https://reactrouter.com/web/guides/quick-start).
 
-_Note_: be sure you are cd'ed into the client directory before installing React related packages.
+_Note_: be sure you are cd'd into the client directory before installing React related packages.
 
 npm install the latest version of [react router](https://reactrouter.com/docs/en/v6) and import the router into App.
 
@@ -406,7 +411,7 @@ npm install the latest version of [react router](https://reactrouter.com/docs/en
 npm i react-router-dom
 ```
 
-Configure App.js for routing:
+Begin configuring App.js for routing:
 
 ```js
 import React from "react";
@@ -435,6 +440,8 @@ function App() {
 export default App;
 ```
 
+Add a Route:
+
 ```js
 <BrowserRouter>
   <Routes>
@@ -442,6 +449,8 @@ export default App;
   </Routes>
 </BrowserRouter>
 ```
+
+Add a second Route:
 
 ```js
 <BrowserRouter>
@@ -452,9 +461,7 @@ export default App;
 </BrowserRouter>
 ```
 
-Check for browser refresh on the new route (as when accessing a new page) by adding a log (`console.log(" checking ", recipes);`) and watching the console.
-
-Use the router's Link component in Recipe.js:
+Use the router's Link component in `Recipe.js`:
 
 ```js
 import React from "react";
@@ -1801,7 +1808,7 @@ function RecipeDetail({ recipes, loggedin, deleteRecipe, editRecipe }) {
 <FormEditRecipe thisRecipe={thisRecipe} editRecipe={editRecipe} />
 ```
 
-## Array.Reduce
+<!-- ## Array.Reduce
 
 Array.reduce is a method that executes a reducer function on each element of the array, resulting in single output value.
 
@@ -1871,9 +1878,9 @@ function reducer(accumulator, value) {
 const total = nums.reduce(reducer);
 
 console.log("total", total);
-```
+``` -->
 
-## useReducer
+<!-- ## useReducer
 
 React comes with a built-in Hook called useReducer that allows you to add state to a function component but manage that state using the reducer pattern.
 
@@ -1997,9 +2004,9 @@ export default function Slider({ onChange }) {
     </>
   );
 }
-```
+``` -->
 
-Edit index.js:
+<!-- Edit index.js:
 
 ```js
 import React from "react";
@@ -2133,9 +2140,9 @@ function reducer(state, action) {
     throw new Error(`This action type isn't supported.`);
   }
 }
-```
+``` -->
 
-Previously we dispatched the type of action that occurred (increment, decrement, and reset).
+<!-- Previously we dispatched the type of action that occurred (increment, decrement, and reset).
 
 We pass along the value of the slider so we can update our step state and we've updated our dispatches to pass an object:
 
@@ -2213,9 +2220,9 @@ function reducer(state, action) {
     throw new Error();
   }
 }
-```
+``` -->
 
-Let's try a simple experiment on our recipes home page.
+<!-- Let's try a simple experiment on our recipes home page.
 
 Reset index.js so its displaying the recipes.
 
@@ -2274,7 +2281,7 @@ main.lit {
 .unlit a {
   color: #eee;
 }
-```
+``` -->
 
 ## Context
 
