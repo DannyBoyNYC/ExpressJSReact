@@ -2367,11 +2367,38 @@ function RecipeDetail({ loggedin, deleteRecipe, editRecipe }) {
   ...
 ```
 
-## Notes
+Expand to include additional state.
 
-## Deployment
+In `App.js`:
 
 ```js
+// create a new variable with the loggedin state
+const value = { recipes, loggedin };
+// pass the variable as the value
+<RecipesContext.Provider value={value}>
+```
+
+Update `Recipes.js` and `RecipeDetail.js`.
+
+```js
+function Recipes({ addRecipe }) {
+  const { recipes, loggedin } = React.useContext(RecipesContext);
+```
+
+```js
+function RecipeDetail({ deleteRecipe, editRecipe }) {
+  const { recipes, loggedin } = React.useContext(RecipesContext);
+```
+
+Remove all props drilling for `loggedin` from `App.js`.
+
+Continue with `setLoggedin`, `addRecipe`, `deleteRecipe` and `editRecipe`
+
+## Notes
+
+<!-- ## Deployment -->
+
+<!-- ```js
 const { createProxyMiddleware } = require("http-proxy-middleware");
 
 module.exports = function (app) {
@@ -2382,11 +2409,11 @@ module.exports = function (app) {
   );
 };
 
-//   "proxy": "https://recipes-do-not-delete.herokuapp.com/",
-//   "proxy": "http://localhost:3456/",
-```
+  // "proxy": "https://recipes-do-not-delete.herokuapp.com/",
+  // "proxy": "http://localhost:3456/",
+``` -->
 
-We could run `npm run build` in the client folder and use that or use a Heroku postbuild script.
+<!-- We could run `npm run build` in the client folder and use that or use a Heroku postbuild script.
 
 In the script section of server's package.json add a script to:
 
@@ -2395,13 +2422,13 @@ In the script section of server's package.json add a script to:
 
 ```js
 "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false npm install --prefix client && npm run build --prefix client"
-```
+``` -->
 
-`server.js` needs to be set up to serve the build.
+<!-- `server.js` needs to be set up to serve the build.
 
-Make sure the following goes after _all_ the routes:
+Make sure the following goes after _all_ the routes: -->
 
-```js
+<!-- ```js
 if (process.env.NODE_ENV === "production") {
   // set static folder
   app.use(express.static("client/build"));
@@ -2409,9 +2436,9 @@ if (process.env.NODE_ENV === "production") {
     res.sendFile(path.resolve(__dirname, "client", "build", "index.html"));
   });
 }
-```
+``` -->
 
-The path.resolve has to have four arguments.
+<!-- The path.resolve has to have four arguments.
 
 Because we're using Node's built in path method be sure to require it (at the top of server.js):
 
@@ -2419,4 +2446,4 @@ Because we're using Node's built in path method be sure to require it (at the to
 
 And also... be sure to remove the old express.static middleware (it is now in the 'else' statement above).
 
-You can also add your database URI to `Config Vars` in the Heroku `Settings` for your project.
+You can also add your database URI to `Config Vars` in the Heroku `Settings` for your project. -->
