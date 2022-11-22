@@ -1252,13 +1252,13 @@ export default FormCreateRecipe;
 
 Allow it to render only if the user is logged in.
 
-- pass the logged in state from App.js to the Recipes component:
+- pass the logged in state from `App.js` to the Recipes component:
 
 ```js
 <Route path="/" element={<Recipes recipes={recipes} loggedin={loggedin} />} />
 ```
 
-Import the component into Recipes.js:
+Import the component into `Recipes.js`:
 
 ```js
 import React from "react";
@@ -1279,11 +1279,11 @@ function Recipes({ recipes, loggedin }) {
 export default Recipes;
 ```
 
-Add values state, handleInputchange and createRecipe functions to the form:
+Add values state, handleInputchange and createRecipe functions to `FormCreateRecipe.js`:
 
 ```js
 import React from "react";
-import Button from "./button/Button";
+import Button from "./Button";
 
 const FormCreateRecipe = () => {
   const [values, setValues] = React.useState({
@@ -1306,6 +1306,7 @@ const FormCreateRecipe = () => {
   const handleInputChange = (event) => {
     const { name, value } = event.target;
     console.log(" name:: ", name, " value:: ", value);
+    // computed property names
     setValues({ ...values, [name]: value });
   };
 
@@ -1352,34 +1353,31 @@ export default FormCreateRecipe;
 
 Note the difference between what we are doing here for handling state change for inputs vs. how we accomplished the same task in previous classes. (Examine the console output.)
 
-We are using [computed property names](https://ui.dev/computed-property-names/).
+We are using ES6 [computed property names](https://ui.dev/computed-property-names/) which allow you to have an expression (a piece of code that results in a single value like a variable or function invocation) be computed as a property name on an object.
 
 Review Object assignment and computed values:
 
 ```js
 var testObj = {};
-
 // dot assignment
 testObj.age = 80;
-console.log(testObj);
 
 var myKey = "name";
 var myValue = "Daniel";
-testObj = {};
 
 // bracket assignment
 testObj[myKey] = myValue;
 console.log(testObj);
 
 // Computed Property Names
-// Before: create the object first, then use bracket notation to assign that property to the value
+// Pre ES6:: create the object first, then use bracket notation to assign that property to the value
 function objectify(key, value) {
   let obj = {};
   obj[key] = value;
   return obj;
 }
 
-objectify("name", "Daniel"); //?
+objectify("name", "Daniel");
 
 // After: use object literal notation to assign the expression as a property on the object without having to create it first
 function objectifyTwo(key, value) {
@@ -1388,14 +1386,16 @@ function objectifyTwo(key, value) {
   };
 }
 
-objectifyTwo("color", "purple"); //?
+objectifyTwo("color", "purple");
 ```
 
 Test the button.
 
-## Adding a Recipe
+## API Hook Returns a Promise
 
-### A New Custom Hook
+We will replace our currect `useFetch` hook with another that doesn't return the data but instead returns a promise. This is a common practice.
+
+Edit the existing `useFetch` hook:
 
 ```js
 const defaultHeaders = {
@@ -1412,7 +1412,7 @@ async function fetchData({ path, method, data, headers }) {
   return response;
 }
 
-export function useApi() {
+export function useFetch() {
   return {
     get: (path, headers) =>
       fetchData({
@@ -1445,10 +1445,12 @@ export function useApi() {
   };
 }
 
-export default useApi;
+export default useFetch;
 ```
 
-We need to alter App.js to use the new hook:
+## Get Recipes
+
+This is a major change. We need to alter App.js to use the new hook:
 
 ```js
 import React from "react";
@@ -1507,7 +1509,7 @@ function App() {
 export default App;
 ```
 
-## addRecipe Function
+## Add the Recipe
 
 Add an addRecipe function to App.js and props drill it down to `Recipes`:
 
@@ -1559,7 +1561,7 @@ function Recipes({ recipes, loggedin, addRecipe }) {
 export default Recipes;
 ```
 
-In FormCreateRecipe, destructure addRecipe and call it with a recipe:
+In `FormCreateRecipe.js`, destructure addRecipe and call it with a recipe:
 
 ```js
 const FormCreateRecipe = ({ addRecipe }) => {
@@ -1584,7 +1586,7 @@ const FormCreateRecipe = ({ addRecipe }) => {
 
 Test and debug.
 
-Demo - backend validation:
+<!-- Demo - backend validation:
 
 ```js
 const RecipeSchema = new mongoose.Schema({
@@ -1606,22 +1608,20 @@ const [values, setValues] = React.useState({
   description: "",
   year: "",
 });
-```
+``` -->
 
 ## Delete
 
-In App.js:
+In `App.js`:
 
 ```js
 const { get, post, del } = useFetch(`/api/recipes`);
-...
-
-  const deleteRecipe = (recipeId) => {
-    console.log("recipeId:", recipeId);
-    del(`/api/recipes/${recipeId}`).then(window.location.replace("/"));
-  };
-  ...
-
+// new function
+const deleteRecipe = (recipeId) => {
+  console.log("recipeId:", recipeId);
+  del(`/api/recipes/${recipeId}`).then(window.location.replace("/"));
+};
+// pass deleteRecipe prop
 <Route
   path="/:recipeId"
   element={
@@ -1631,10 +1631,10 @@ const { get, post, del } = useFetch(`/api/recipes`);
       loggedin={loggedin}
     />
   }
-/>
+/>;
 ```
 
-RecipeDetail.js:
+In `RecipeDetail.js`:
 
 <!-- prettier-ignore -->
 ```js
@@ -1707,7 +1707,7 @@ App.js:
 
 ```js
 const { get, post, del, put } = useFetch(`/api/recipes`);
-...
+// create a new function
 const editRecipe = (updatedRecipe) => {
   console.log(updatedRecipe);
   put(`/api/recipes/${updatedRecipe._id}`, updatedRecipe).then(
@@ -1716,20 +1716,20 @@ const editRecipe = (updatedRecipe) => {
     })
   );
 };
-...
+// prop drill
 <RecipeDetail
   recipes={recipes}
   deleteRecipe={deleteRecipe}
   loggedin={loggedin}
   editRecipe={editRecipe}
-/>
+/>;
 ```
 
-New `src/FormEditRecipe.js`:
+New component; `src/FormEditRecipe.js`:
 
 ```js
 import React from "react";
-import Button from "./button/Button";
+import Button from "./Button";
 
 const FormEditRecipe = ({ editRecipe, thisRecipe }) => {
   const [values, setValues] = React.useState({
@@ -1802,10 +1802,15 @@ Compose it in`RecipeDetail.js`:
 
 ```js
 import FormEditRecipe from "./FormEditRecipe";
-...
+// destructure
 function RecipeDetail({ recipes, loggedin, deleteRecipe, editRecipe }) {
-...
-<FormEditRecipe thisRecipe={thisRecipe} editRecipe={editRecipe} />
+// compose
+{loggedin && (
+  <>
+    <FormEditRecipe thisRecipe={thisRecipe} editRecipe={editRecipe} />
+    <button onClick={() => delRecipe()}>delete</button>
+  </>
+)}
 ```
 
 <!-- ## Array.Reduce
